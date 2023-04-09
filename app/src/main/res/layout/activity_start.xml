@@ -9,10 +9,12 @@
     tools:context=".StartActivity">
 
     <Button
+        style="@style/Button"
         android:id="@+id/startButton"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="50dp"
         android:gravity="center"
+        android:lines="1"
         android:text="@string/start_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

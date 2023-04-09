@@ -1,4 +1,5 @@
 <resources>
     <string name="app_name">Sea Battle</string>
     <string name="start_text">Начать игру</string>
+    <string name="continue_button">continue</string>
 </resources>

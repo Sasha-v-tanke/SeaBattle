@@ -12,12 +12,11 @@
     <color name="black_overlay">#66000000</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="orange">#FFFF6400</color>
-    <color name="green">#FF00FF00</color>
+    <color name="orange">#FF6400</color>
     <color name="orange_2">#FFFF3000</color>
 
-    <color name="black_orange">#FF000000</color>
-    <color name="white_black">#FFFFFFFF</color>
-    <color name="black_white">#FF000000</color>
-    <color name="orange_black">#FFFF6400</color>
+    <color name="black_orange">#FF6400</color>
+    <color name="white_black">#FF000000</color>
+    <color name="black_white">#FFFFFFFF</color>
+    <color name="orange_black">#FF000000</color>
 </resources>
