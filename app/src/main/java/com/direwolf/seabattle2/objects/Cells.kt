@@ -2,89 +2,42 @@ package com.direwolf.seabattle2.objects
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.Gravity
 import android.widget.GridLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.direwolf.seabattle2.R
+import org.w3c.dom.Text
 
-class Cell(context: Context, grid: GridLayout, x: Int, y: Int, size: Int){
-    private var textView: TextView
-
-    init {
-        textView = TextView(context)
-        textView.text = "$x $y"
-        val background = GradientDrawable()
-        background.setColor(ContextCompat.getColor(context, R.color.black_orange))
-        background.setStroke(2, ContextCompat.getColor(context, R.color.orange_black))
-        textView.background = background
-        textView.setTextColor(ContextCompat.getColor(context, R.color.orange_black))
-
-        textView.gravity = Gravity.CENTER
-
-        textView.width = size
-        textView.height = size
-
-        val layoutParams = GridLayout.LayoutParams()
-        layoutParams.rowSpec = GridLayout.spec(x, 1, 1f)
-        layoutParams.columnSpec = GridLayout.spec(y, 1, 1f)
-        grid.addView(textView, layoutParams)
-        textView.setOnClickListener {
-            onTouch()
-        }
-    }
-
-    private fun onTouch(){
-
-    }
-}
-
-class Cell2(context: Context, grid: GridLayout, x: Int, y: Int, size: Int){
-    private var textView: TextView
+class PlacementCell(context: Context, layout: ConstraintLayout, size: Int,
+                    private val x: Int, private val y: Int)
+{
+    private var textView: TextView = TextView(context)
 
     init {
-        textView = TextView(context)
-        textView.text = " "
-        //textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
+        textView.text = ""
         val background = GradientDrawable()
         background.setColor(ContextCompat.getColor(context, R.color.black_orange))
-        background.setStroke(0, ContextCompat.getColor(context, R.color.black_orange))
+        background.setStroke(4, ContextCompat.getColor(context, R.color.white))
         textView.background = background
         textView.setTextColor(ContextCompat.getColor(context, R.color.black_orange))
 
         textView.gravity = Gravity.CENTER
 
-        textView.width = size
-        textView.height = size
-
-        val layoutParams = GridLayout.LayoutParams()
-        layoutParams.rowSpec = GridLayout.spec(x, 1, 1f)
-        layoutParams.columnSpec = GridLayout.spec(y, 1, 1f)
-        grid.addView(textView, layoutParams)
+        val params = ConstraintLayout.LayoutParams(size, size)
+        params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        params.leftMargin = x
+        params.topMargin = y
+        textView.layoutParams = params
+        layout.addView(textView)
     }
-}
-
-class NoneCell(context: Context, grid: GridLayout, x: Int, y: Int, size: Int) {
-    private var textView: TextView
-
-    init {
-        textView = TextView(context)
-        textView.text = ""
-        textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
-        val background = GradientDrawable()
-        background.setColor(ContextCompat.getColor(context, R.color.orange_black))
-        background.setStroke(2, ContextCompat.getColor(context, R.color.orange_black))
-        textView.background = background
-        textView.setTextColor(ContextCompat.getColor(context, R.color.orange_black))
-
-        textView.gravity = Gravity.CENTER
-
-        textView.width = size
-        textView.height = size
-
-        val layoutParams = GridLayout.LayoutParams()
-        layoutParams.rowSpec = GridLayout.spec(x, 1, 1f)
-        layoutParams.columnSpec = GridLayout.spec(y, 1, 1f)
-        grid.addView(textView, layoutParams)
+    fun getView(): TextView{
+        return textView
+    }
+    fun getCoor(): Pair<Int, Int>{
+        return Pair(x, y)
     }
 }

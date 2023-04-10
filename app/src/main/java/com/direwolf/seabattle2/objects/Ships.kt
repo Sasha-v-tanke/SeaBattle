@@ -2,61 +2,137 @@ package com.direwolf.seabattle2.objects
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.Gravity
 import android.widget.GridLayout
 import android.widget.TextView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import com.direwolf.seabattle2.PlacementActivity
 import com.direwolf.seabattle2.R
 
-class Ship1(context: Context, grid: GridLayout, length: Int, x: Int, y: Int, size: Int):
-    Ship(context, grid, length, x, y, size, false) {
-        init{
-            bgColor = ContextCompat.getColor(context, R.color.black_orange)
-            createView(context, grid, length, x, y, size, false)
-
-        }
-}
-
-open class Ship(context: Context, grid: GridLayout,
-                private val length: Int, x: Int, y: Int, size: Int, private val vertical: Boolean)
+class PlacementShip(
+    private val context: Context, layout: ConstraintLayout, private val size: Int,
+    private val x: Int, private val y: Int,
+    private val length: Int, private val defaultPlace: Pair<Int, Int>)
 {
-    protected lateinit var textView: TextView
-    protected var bgColor: Int
 
+    private var vertical = true
+    private var textView = TextView(context)
+    private var selected = false
+    private var set = false
     init {
-        bgColor = ContextCompat.getColor(context, R.color.orange_black)
-        createView(context, grid, length, x, y, size, vertical)
-    }
-    protected fun createView(context: Context, grid: GridLayout,
-                           length: Int, x: Int, y: Int, size: Int, vertical: Boolean){
-
-        textView = TextView(context)
         textView.text = ""
-        textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
         val background = GradientDrawable()
-        background.setColor(bgColor)
+        background.setColor(ContextCompat.getColor(context, R.color.black_orange))
         textView.background = background
         textView.gravity = Gravity.CENTER
-        val layoutParams: GridLayout.LayoutParams
-        if (!vertical) {
-            textView.width = size
-            textView.height = size
-            layoutParams = GridLayout.LayoutParams(
-                GridLayout.spec(x, 1, 1f),
-                GridLayout.spec(y, length, 1f)
-            )
+
+        val params = ConstraintLayout.LayoutParams(size, size * length)
+        params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        params.leftMargin = x
+        params.topMargin = y
+        textView.layoutParams = params
+        layout.addView(textView)
+
+        textView.setOnClickListener {
+            select()
+        }
+    }
+
+    private fun select(){
+        if (selected) {
+            rotate()
+        }
+        else if(set){
+            return
         }
         else{
-            textView.width = size
-            textView.height = size
-            layoutParams = GridLayout.LayoutParams(
-                GridLayout.spec(x, length, 1f),
-                GridLayout.spec(y, 1, 1f)
-            )
+            val newParams = ConstraintLayout.LayoutParams(size, size * length)
+            newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.leftMargin = defaultPlace.first
+            newParams.topMargin = defaultPlace.second - length / 2 * size
+            textView.layoutParams = newParams
+
+            val background = GradientDrawable()
+            background.setColor(ContextCompat.getColor(context, R.color.white))
+            textView.background = background
+            selected = true
+            vertical = true
+            (context as PlacementActivity).shipSelect(this)
         }
-        grid.addView(textView, layoutParams)
     }
+
+    private fun rotate(){
+        if (!selected){
+            return
+        }
+        if (vertical){
+            vertical = false
+            val newParams = ConstraintLayout.LayoutParams(size * length, size)
+            newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.leftMargin = defaultPlace.first - length / 2 * size
+            newParams.topMargin = defaultPlace.second
+            textView.layoutParams = newParams
+
+            val background = GradientDrawable()
+            background.setColor(ContextCompat.getColor(context, R.color.white))
+            textView.background = background
+        }
+        else{
+            vertical = true
+            val newParams = ConstraintLayout.LayoutParams(size, size * length)
+            newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.leftMargin = defaultPlace.first
+            newParams.topMargin = defaultPlace.second - length / 2 * size
+            textView.layoutParams = newParams
+
+            val background = GradientDrawable()
+            background.setColor(ContextCompat.getColor(context, R.color.white))
+            textView.background = background
+        }
+    }
+
+    fun unselect(){
+        if (selected) {
+            val newParams = ConstraintLayout.LayoutParams(size, size * length)
+            newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+            newParams.leftMargin = x
+            newParams.topMargin = y
+            textView.layoutParams = newParams
+
+            val background = GradientDrawable()
+            background.setColor(ContextCompat.getColor(context, R.color.black_orange))
+            textView.background = background
+            selected = false
+            vertical = true
+        }
+    }
+
+    fun set(x: Int, y: Int){
+        set = true
+        val newParams: ConstraintLayout.LayoutParams = if (vertical){
+            ConstraintLayout.LayoutParams(size, size * length)
+        } else{
+            ConstraintLayout.LayoutParams(size * length, size)
+        }
+        newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+        newParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        newParams.leftMargin = x
+        newParams.topMargin = y
+        textView.layoutParams = newParams
+
+        val background = GradientDrawable()
+        background.setColor(ContextCompat.getColor(context, R.color.orange_black))
+        textView.background = background
+        selected = false
+        (context as PlacementActivity).shipSelect(this)
+    }
+
 
     fun getOrientation(): Boolean{
         return vertical
@@ -68,15 +144,5 @@ open class Ship(context: Context, grid: GridLayout,
 
     fun getView(): TextView{
         return textView
-    }
-}
-
-class SelectedShip(context: Context, grid: GridLayout, length: Int, x: Int, y: Int,
-                   size: Int, vertical: Boolean):
-    Ship(context, grid, length, x, y, size, vertical)
-{
-    init {
-        bgColor = ContextCompat.getColor(context, R.color.white)
-        createView(context, grid, length, x, y, size, vertical)
     }
 }

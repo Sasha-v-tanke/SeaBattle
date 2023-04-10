@@ -2,32 +2,28 @@ package com.direwolf.seabattle2
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
-import android.widget.GridLayout
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.direwolf.seabattle2.objects.*
 import kotlin.math.min
 
 class PlacementActivity : DefaultActivity() {
-    private lateinit var field: Array<Array<Cell>>
-    private lateinit var grid1: GridLayout
-    private lateinit var grid2: GridLayout
-    private var ships = arrayListOf<Ship>()
-    private lateinit var cells: Array<Array<NoneCell>>
+    private var screenWidth = 0
+    private var screenHeight = 0
     private var cellSize1: Int = 0
-    private var cellSize2: Int = 0
-    private val defaultPlace = listOf(4, 9)
-    private lateinit var selectedShip: Ship
+    private lateinit var grid: PlacementGrid
+    private val ships = arrayListOf<PlacementShip>()
+    private var selectedShip: PlacementShip? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_placement)
 
         val continueButton = findViewById<Button>(R.id.continueButton)
+
         continueButton.setOnClickListener {
             val flag = checkPlacement()
-            if (flag){
+            if (flag) {
                 val intent = Intent(this, StartActivity::class.java)
                 startActivity(intent)
             }
@@ -36,126 +32,101 @@ class PlacementActivity : DefaultActivity() {
 
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
-        grid1 = findViewById(R.id.grid1)
-        grid2 = findViewById(R.id.grid2)
+        val layout = findViewById<ConstraintLayout>(R.id.layout)
 
         val displayMetrics = resources.displayMetrics
-        val screenHeight = displayMetrics.heightPixels
-        val screenWidth = displayMetrics.widthPixels
-        cellSize1 = min(screenHeight / 12, screenWidth / 2 / 11)
-        cellSize2 = min(screenHeight / 11, screenWidth / 2 / 16)
+        screenHeight = displayMetrics.heightPixels
+        screenWidth = displayMetrics.widthPixels
 
-        setMargins()
-        createCells()
+        cellSize1 = min(screenHeight / 12, screenWidth / 25)
+
+        val top = screenHeight / 2 - 5 * cellSize1
+        grid = PlacementGrid(this, layout, cellSize1, 10, 10, cellSize1, top)
+
         setShips()
     }
 
-    private fun setShips(){
-        val coords = arrayListOf<List<Int>>()
-        coords.add(listOf(1, 1, 4))
-        coords.add(listOf(1, 6, 2))
+    private fun setShips() {
+        var left = screenWidth - 2 * cellSize1
+        var top = cellSize1
+        createShip(left, top, 4)
+        left = screenWidth - 4 * cellSize1
+        createShip(left, top, 3)
+        left = screenWidth - 6 * cellSize1
+        createShip(left, top, 3)
+        left = screenWidth - 8 * cellSize1
+        createShip(left, top, 1)
+        left = screenWidth - 2 * cellSize1
+        top = cellSize1 * 6
+        createShip(left, top, 2)
+        left = screenWidth - 4 * cellSize1
+        createShip(left, top, 2)
+        left = screenWidth - 6 * cellSize1
+        createShip(left, top, 2)
+        top = cellSize1 * 5
+        left = screenWidth - 8 * cellSize1
+        createShip(left, top, 1)
+        top = cellSize1 * 3
+        left = screenWidth - 8 * cellSize1
+        createShip(left, top, 1)
+        top = cellSize1 * 7
+        left = screenWidth - 8 * cellSize1
+        createShip(left, top, 1)
+    }
 
-        coords.add(listOf(3, 1, 3))
-        coords.add(listOf(3, 5, 3))
+    private fun createShip(left: Int, top: Int, length: Int) {
+        val x = screenWidth - 11 * cellSize1
+        val y = cellSize1 * 6
+        val defaultPlace = Pair(x, y)
+        val layout = findViewById<ConstraintLayout>(R.id.layout)
+        ships.add(PlacementShip(this, layout, cellSize1, left, top, length, defaultPlace))
+    }
 
-        coords.add(listOf(5, 1, 1))
-        coords.add(listOf(5, 3, 1))
-        coords.add(listOf(5, 5, 1))
-        coords.add(listOf(5, 7, 1))
+    private fun checkPlacement(): Boolean {
+        return grid.checkPlacement()
+    }
 
-        coords.add(listOf(7, 1, 2))
-        coords.add(listOf(7, 4, 2))
-
-        val coords2 = arrayListOf<List<Int>>()
-        for (coor in coords){
-            coords2.add(listOf(coor[0], coor[1]))
+    fun shipSelect(ship: PlacementShip) {
+        if (selectedShip != null) {
+            selectedShip!!.unselect()
         }
+        selectedShip = ship
+    }
 
-        for (x in 0..19){
-            for (y in 0..19){
-                if (listOf(x, y) in  coords2){
-                    for (i in 0..5){
-                        if (listOf(x, y, i) in  coords){
-                            val ship = Ship1(this, grid2, i, x, y, cellSize2)
-                            ship.getView().setOnClickListener{
-                                selectShip(ship)
-                            }
-                            ships.add(ship)
-                            break
-                        }
+    fun shipUnselect(){
+        selectedShip = null
+    }
+
+    fun getInf(): List<Any?> {
+        val left = cellSize1
+        val right = left + cellSize1 * 10
+        val top = screenHeight / 2 - 5 * cellSize1
+        val bottom = top + cellSize1 * 10
+        return listOf(selectedShip, left, right, top, bottom)
+    }
+
+    fun setShip(x: Int, y: Int) {
+        if (selectedShip != null) {
+            val length = selectedShip!!.getLength()
+            val left = cellSize1
+            val right = left + cellSize1 * 10
+            val top = screenHeight / 2 - 5 * cellSize1
+            val bottom = top + cellSize1 * 10
+            if (selectedShip!!.getOrientation()) {
+                if ((left <= x) and (x <= right)) {
+                    if ((top <= y) and (y + cellSize1 * length <= bottom)) {
+                        selectedShip!!.set(x, y)
+                        selectedShip = null
                     }
                 }
             }
-        }
-        //Log.w("my app", defaultPlace.toString())
-        selectedShip = SelectedShip(this, grid2, 4, defaultPlace[0],
-            defaultPlace[1], cellSize2, false)
-        selectedShip.getView().setOnClickListener {
-            rotateShip()
-        }
-    }
-
-    private fun selectShip(ship: Ship1){
-        val length = ship.getLength()
-        grid2.removeView(selectedShip.getView())
-        selectedShip = SelectedShip(this, grid2, length, defaultPlace[0],
-            defaultPlace[1], cellSize2, false)
-        selectedShip.getView().setOnClickListener {
-            rotateShip()
-        }
-    }
-    private fun rotateShip(){
-        val vertical = !selectedShip.getOrientation()
-        val len = selectedShip.getLength()
-        grid2.removeView(selectedShip.getView())
-        selectedShip = SelectedShip(this, grid2, len, defaultPlace[0],
-            defaultPlace[1], cellSize2, vertical)
-        selectedShip.getView().setOnClickListener {
-            rotateShip()
-        }
-    }
-
-    private fun checkPlacement(): Boolean{
-        return false
-    }
-
-    private fun setMargins(){
-        var layoutParams = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.WRAP_CONTENT,
-            ConstraintLayout.LayoutParams.WRAP_CONTENT
-        )
-
-        layoutParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
-        layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-        layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-        layoutParams.leftMargin = cellSize1
-        layoutParams.width = cellSize1 * 10
-        layoutParams.height = cellSize1 * 10
-        grid1.layoutParams = layoutParams
-
-        layoutParams = ConstraintLayout.LayoutParams(
-            ConstraintLayout.LayoutParams.WRAP_CONTENT,
-            ConstraintLayout.LayoutParams.WRAP_CONTENT
-        )
-
-        layoutParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
-        layoutParams.rightToRight = ConstraintLayout.LayoutParams.PARENT_ID
-        layoutParams.bottomToBottom = ConstraintLayout.LayoutParams.PARENT_ID
-        layoutParams.rightMargin = cellSize2
-        layoutParams.width = cellSize2 * 15
-        layoutParams.height = cellSize2 * 9
-        grid2.layoutParams = layoutParams
-    }
-
-    private fun createCells(){
-        field = Array(10) { i ->
-            Array(10) { j ->
-                Cell(this, grid1, i, j, cellSize1)
-            }
-        }
-        cells = Array(9) { i ->
-            Array(15) { j ->
-                NoneCell(this, grid2, i, j, cellSize2)
+            else{
+                if ((left <= x) and (x + cellSize1 * length <= right)) {
+                    if ((top <= y) and (y <= bottom)) {
+                        selectedShip!!.set(x, y)
+                        selectedShip = null
+                    }
+                }
             }
         }
     }
