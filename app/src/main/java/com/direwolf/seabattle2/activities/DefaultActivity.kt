@@ -1,4 +1,4 @@
-package com.direwolf.seabattle2
+package com.direwolf.seabattle2.activities
 
 import android.os.Build
 import android.os.Bundle
@@ -12,6 +12,8 @@ import androidx.core.view.WindowInsetsControllerCompat
 
 
 abstract class DefaultActivity: AppCompatActivity() {
+    protected var screenHeight: Int = 0
+    protected var screenWidth: Int = 0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
@@ -28,5 +30,12 @@ abstract class DefaultActivity: AppCompatActivity() {
             val controller = ViewCompat.getWindowInsetsController(window.decorView)
             controller?.systemBarsBehavior = WindowInsetsControllerCompat.BEHAVIOR_SHOW_BARS_BY_SWIPE
         }
+    }
+
+    override fun onPostCreate(savedInstanceState: Bundle?) {
+        super.onPostCreate(savedInstanceState)
+        val displayMetrics = resources.displayMetrics
+        screenHeight = displayMetrics.heightPixels
+        screenWidth = displayMetrics.widthPixels
     }
 }

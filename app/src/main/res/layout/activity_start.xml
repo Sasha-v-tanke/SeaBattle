@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/MyTheme"
-    tools:context=".StartActivity">
+    tools:context=".activities.StartActivity">
 
     <Button
         style="@style/Button"

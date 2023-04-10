@@ -1,8 +1,9 @@
-package com.direwolf.seabattle2
+package com.direwolf.seabattle2.activities
 
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import com.direwolf.seabattle2.R
 
 class StartActivity : DefaultActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {

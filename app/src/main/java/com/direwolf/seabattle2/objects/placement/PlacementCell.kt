@@ -1,15 +1,12 @@
-package com.direwolf.seabattle2.objects
+package com.direwolf.seabattle2.objects.placement
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
-import android.util.Log
 import android.view.Gravity
-import android.widget.GridLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.direwolf.seabattle2.R
-import org.w3c.dom.Text
 
 class PlacementCell(context: Context, layout: ConstraintLayout, size: Int,
                     private val x: Int, private val y: Int)
@@ -34,7 +31,7 @@ class PlacementCell(context: Context, layout: ConstraintLayout, size: Int,
         textView.layoutParams = params
         layout.addView(textView)
     }
-    fun getView(): TextView{
+    fun getView(): TextView {
         return textView
     }
     fun getCoor(): Pair<Int, Int>{

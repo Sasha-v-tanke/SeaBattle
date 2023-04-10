@@ -1,4 +1,4 @@
-package com.direwolf.seabattle2.objects
+package com.direwolf.seabattle2.objects.placement
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
@@ -7,7 +7,7 @@ import android.view.Gravity
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.direwolf.seabattle2.PlacementActivity
+import com.direwolf.seabattle2.activities.PlacementActivity
 import com.direwolf.seabattle2.R
 
 class PlacementGrid (private val context: Context, private val layout: ConstraintLayout,
@@ -135,17 +135,20 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
         return count == 20
     }
 
-    fun removeShip(x: Int, y: Int, len: Int, vertical: Boolean){
+    fun removeShip(x: Int, y: Int, len: Int, vertical: Boolean) {
         val i = (x - left) / size
         val j = (y - top) / size
         Log.w("ship", "$i $j $x $y")
         for (n in 0 until len) {
-            if (vertical){
+            if (vertical) {
                 cells2[i][j + n] = 0
-            }
-            else{
+            } else {
                 cells2[i + n][j] = 0
             }
         }
+    }
+
+    fun getCells(): Array<Array<Int>> {
+        return cells2
     }
 }

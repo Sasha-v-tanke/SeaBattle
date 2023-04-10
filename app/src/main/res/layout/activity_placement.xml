@@ -7,7 +7,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:theme="@style/MyTheme"
-    tools:context=".PlacementActivity">
+    tools:context=".activities.PlacementActivity">
 
     <Button
         style="@style/Button"

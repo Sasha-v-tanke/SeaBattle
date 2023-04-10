@@ -1,19 +1,19 @@
-package com.direwolf.seabattle2.objects
+package com.direwolf.seabattle2.objects.placement
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.Gravity
-import android.widget.GridLayout
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
-import com.direwolf.seabattle2.PlacementActivity
+import com.direwolf.seabattle2.activities.PlacementActivity
 import com.direwolf.seabattle2.R
 
 class PlacementShip(
     private val context: Context, layout: ConstraintLayout, private val size: Int,
     private val x: Int, private val y: Int,
-    private val length: Int, private val defaultPlace: Pair<Int, Int>) {
+    private val length: Int, private val defaultPlace: Pair<Int, Int>)
+{
 
     private var vertical = true
     private var textView = TextView(context)
