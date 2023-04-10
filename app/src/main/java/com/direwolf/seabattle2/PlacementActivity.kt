@@ -74,6 +74,11 @@ class PlacementActivity : DefaultActivity() {
         createShip(left, top, 1)
     }
 
+    fun removeShip(ship: PlacementShip) {
+        val coor = ship.getCoor()
+        grid.removeShip(coor.first, coor.second, ship.getLength(), ship.getOrientation())
+    }
+
     private fun createShip(left: Int, top: Int, length: Int) {
         val x = screenWidth - 11 * cellSize1
         val y = cellSize1 * 6
@@ -93,7 +98,7 @@ class PlacementActivity : DefaultActivity() {
         selectedShip = ship
     }
 
-    fun shipUnselect(){
+    fun shipUnselect() {
         selectedShip = null
     }
 
@@ -103,31 +108,5 @@ class PlacementActivity : DefaultActivity() {
         val top = screenHeight / 2 - 5 * cellSize1
         val bottom = top + cellSize1 * 10
         return listOf(selectedShip, left, right, top, bottom)
-    }
-
-    fun setShip(x: Int, y: Int) {
-        if (selectedShip != null) {
-            val length = selectedShip!!.getLength()
-            val left = cellSize1
-            val right = left + cellSize1 * 10
-            val top = screenHeight / 2 - 5 * cellSize1
-            val bottom = top + cellSize1 * 10
-            if (selectedShip!!.getOrientation()) {
-                if ((left <= x) and (x <= right)) {
-                    if ((top <= y) and (y + cellSize1 * length <= bottom)) {
-                        selectedShip!!.set(x, y)
-                        selectedShip = null
-                    }
-                }
-            }
-            else{
-                if ((left <= x) and (x + cellSize1 * length <= right)) {
-                    if ((top <= y) and (y <= bottom)) {
-                        selectedShip!!.set(x, y)
-                        selectedShip = null
-                    }
-                }
-            }
-        }
     }
 }

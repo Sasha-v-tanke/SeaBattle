@@ -13,13 +13,13 @@ import com.direwolf.seabattle2.R
 class PlacementShip(
     private val context: Context, layout: ConstraintLayout, private val size: Int,
     private val x: Int, private val y: Int,
-    private val length: Int, private val defaultPlace: Pair<Int, Int>)
-{
+    private val length: Int, private val defaultPlace: Pair<Int, Int>) {
 
     private var vertical = true
     private var textView = TextView(context)
     private var selected = false
     private var set = false
+
     init {
         textView.text = ""
         val background = GradientDrawable()
@@ -40,14 +40,13 @@ class PlacementShip(
         }
     }
 
-    private fun select(){
+    private fun select() {
         if (selected) {
             rotate()
-        }
-        else if(set){
-            return
-        }
-        else{
+        } else {
+            if (set) {
+                (context as PlacementActivity).removeShip(this)
+            }
             val newParams = ConstraintLayout.LayoutParams(size, size * length)
             newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
             newParams.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
@@ -64,11 +63,11 @@ class PlacementShip(
         }
     }
 
-    private fun rotate(){
-        if (!selected){
+    private fun rotate() {
+        if (!selected) {
             return
         }
-        if (vertical){
+        if (vertical) {
             vertical = false
             val newParams = ConstraintLayout.LayoutParams(size * length, size)
             newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
@@ -80,8 +79,7 @@ class PlacementShip(
             val background = GradientDrawable()
             background.setColor(ContextCompat.getColor(context, R.color.white))
             textView.background = background
-        }
-        else{
+        } else {
             vertical = true
             val newParams = ConstraintLayout.LayoutParams(size, size * length)
             newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
@@ -96,7 +94,7 @@ class PlacementShip(
         }
     }
 
-    fun unselect(){
+    fun unselect() {
         if (selected) {
             val newParams = ConstraintLayout.LayoutParams(size, size * length)
             newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
@@ -113,11 +111,11 @@ class PlacementShip(
         }
     }
 
-    fun set(x: Int, y: Int){
+    fun set(x: Int, y: Int) {
         set = true
-        val newParams: ConstraintLayout.LayoutParams = if (vertical){
+        val newParams: ConstraintLayout.LayoutParams = if (vertical) {
             ConstraintLayout.LayoutParams(size, size * length)
-        } else{
+        } else {
             ConstraintLayout.LayoutParams(size * length, size)
         }
         newParams.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
@@ -134,7 +132,7 @@ class PlacementShip(
     }
 
 
-    fun getOrientation(): Boolean{
+    fun getOrientation(): Boolean {
         return vertical
     }
 
@@ -142,7 +140,10 @@ class PlacementShip(
         return length
     }
 
-    fun getView(): TextView{
-        return textView
+    fun getCoor(): Pair<Int, Int> {
+        val params = textView.layoutParams as ConstraintLayout.LayoutParams
+        val a = params.leftMargin
+        val b = params.topMargin
+        return Pair(a, b)
     }
 }

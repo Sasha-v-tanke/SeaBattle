@@ -2,6 +2,7 @@ package com.direwolf.seabattle2.objects
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.Gravity
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -12,9 +13,10 @@ import com.direwolf.seabattle2.R
 class PlacementGrid (private val context: Context, private val layout: ConstraintLayout,
                      private val size: Int,
                      x: Int, y: Int,
-                     private val left: Int, private val top: Int){
+                     private val left: Int, private val top: Int) {
     private var cells: Array<Array<PlacementCell>>
-    private var cells2 = Array(x) {Array(y){0}}
+    private var cells2 = Array(x) { Array(y) { 0 } }
+
     init {
         val bg = TextView(context)
         bg.text = ""
@@ -40,7 +42,7 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
         }
     }
 
-    private fun createCell(x: Int, y: Int): PlacementCell{
+    private fun createCell(x: Int, y: Int): PlacementCell {
         val cell = PlacementCell(context, layout, size, x, y)
         cell.getView().setOnClickListener {
             setShip(x, y)
@@ -48,7 +50,7 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
         return cell
     }
 
-    private fun setShip(x:Int, y:Int){
+    private fun setShip(x: Int, y: Int) {
         val lst = (context as PlacementActivity).getInf()
         val selectedShip = lst[0] as PlacementShip?
         if (selectedShip != null) {
@@ -72,8 +74,7 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
                         }
                     }
                 }
-            }
-            else{
+            } else {
                 if ((left <= x) and (x + size * length <= right)) {
                     if ((top <= y) and (y <= bottom)) {
                         val i = (x - left) / size
@@ -93,10 +94,10 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
     }
 
     private fun checkPlace(x: Int, y: Int, len: Int, vertical: Boolean): Boolean {
-        if (vertical){
+        if (vertical) {
             var flag = true
             for (m in -1..1) {
-                for (n in -1 .. len) {
+                for (n in -1..len) {
                     if (((0 <= x + m) and (x + m <= 9)) and ((0 <= y + n) and (y + n <= 9))) {
                         if (cells2[x + m][y + n] != 0) {
                             flag = false
@@ -106,11 +107,10 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
                 }
             }
             return flag
-        }
-        else {
+        } else {
             var flag = true
             for (m in -1..1) {
-                for (n in -1 .. len) {
+                for (n in -1..len) {
                     if (((0 <= x + n) and (x + n <= 9)) and ((0 <= y + m) and (y + m <= 9))) {
                         if (cells2[x + n][y + m] != 0) {
                             flag = false
@@ -123,15 +123,29 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
         }
     }
 
-    fun checkPlacement():Boolean{
+    fun checkPlacement(): Boolean {
         var count = 0
-        for (i in 0..9){
-            for (j in 0..9){
-                if (cells2[i][j] != 0){
+        for (i in 0..9) {
+            for (j in 0..9) {
+                if (cells2[i][j] != 0) {
                     count++
                 }
             }
         }
         return count == 20
+    }
+
+    fun removeShip(x: Int, y: Int, len: Int, vertical: Boolean){
+        val i = (x - left) / size
+        val j = (y - top) / size
+        Log.w("ship", "$i $j $x $y")
+        for (n in 0 until len) {
+            if (vertical){
+                cells2[i][j + n] = 0
+            }
+            else{
+                cells2[i + n][j] = 0
+            }
+        }
     }
 }
