@@ -12,7 +12,7 @@ import com.direwolf.seabattle2.R
 
 class PlacementGrid (private val context: Context, private val layout: ConstraintLayout,
                      private val size: Int,
-                     x: Int, y: Int,
+                     private val x: Int, private val y: Int,
                      private val left: Int, private val top: Int) {
     private var cells: Array<Array<PlacementCell>>
     private var cells2 = Array(x) { Array(y) { 0 } }
@@ -50,7 +50,7 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
         return cell
     }
 
-    private fun setShip(x: Int, y: Int) {
+    fun setShip(x: Int, y: Int) {
         val lst = (context as PlacementActivity).getInf()
         val selectedShip = lst[0] as PlacementShip?
         if (selectedShip != null) {
@@ -91,6 +91,10 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
                 }
             }
         }
+    }
+
+    fun reset(){
+        cells2 = Array(x) { Array(y) { 0 } }
     }
 
     private fun checkPlace(x: Int, y: Int, len: Int, vertical: Boolean): Boolean {
@@ -138,7 +142,7 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
     fun removeShip(x: Int, y: Int, len: Int, vertical: Boolean) {
         val i = (x - left) / size
         val j = (y - top) / size
-        Log.w("ship", "$i $j $x $y")
+        //Log.w("ship", "$i $j $x $y")
         for (n in 0 until len) {
             if (vertical) {
                 cells2[i][j + n] = 0
@@ -146,9 +150,5 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
                 cells2[i + n][j] = 0
             }
         }
-    }
-
-    fun getCells(): Array<Array<Int>> {
-        return cells2
     }
 }

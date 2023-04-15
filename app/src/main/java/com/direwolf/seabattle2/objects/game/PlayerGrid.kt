@@ -13,7 +13,8 @@ class PlayerGrid(private val context: Context, private val layout: ConstraintLay
                  private val size: Int, x: Int, y: Int,
                  private val left: Int, private val top: Int) {
     private var cells: Array<Array<GameCell>>
-    private lateinit var ships: Array<GameShip>
+    private var cells2 = Array(x) { Array(y) { 0 } }
+    private lateinit var ships: Array<GameShipPlayer>
 
     init {
         val bg = TextView(context)
@@ -56,16 +57,94 @@ class PlayerGrid(private val context: Context, private val layout: ConstraintLay
             val y = (coors[i * 4 + 1]) * size + top
             val len = coors[i * 4 + 2]
             val ver = coors[i * 4 + 3]
-            val ship = GameShip(context, layout, size, x, y, len, ver == 1)
+            val ship = GameShipPlayer(context, layout, size, x, y, len, ver == 1)
             ships += ship
+            for (j in 0 until ship.getLength()) {
+                cells2[(ship.getCells()[j].first - left) / size][(ship.getCells()[j].second - top) / size] =
+                    1
+            }
         }
     }
 
-    fun boom(x: Int, y: Int): Boolean {
-        return false
+    fun boom(x: Int, y: Int): Array<Any> {
+        val flag = (cells2[x][y] > 0)
+        var flag2 = false
+        var len = 0
+        createBoom(flag, x, y)
+
+        for (ship in ships) {
+            if (Pair(x * size + left, y * size + top) in ship.getCells()) {
+                ship.boom(x * size + left, y * size + top)
+                flag2 = ship.isDestroyed()
+                len = ship.getLength()
+                if (flag2){
+                    createBigBoom(ship)
+                }
+            }
+        }
+        var lst = emptyArray<Any>()
+        lst += flag
+        lst += flag2
+        lst += len
+        printField()
+        cells2[x][y] = -1
+        //Log.w("cell", "$flag $flag2")
+        return lst
     }
 
-    fun check(): Boolean {
-        return false
+    private fun printField() {
+        var ans = "||\n"
+        for (i in 0..9) {
+            for (j in 0..9) {
+                ans += cells2[i][j].toString() + "\t"
+            }
+            ans += "\n"
+        }
+        //Log.i("cells", ans)
+    }
+
+    private fun createBigBoom(ship: GameShipPlayer) {
+        val p = ship.getCells()
+        var a = emptyArray<Int>()
+        var b = emptyArray<Int>()
+        for (e in p) {
+            a += e.first
+            b += e.second
+        }
+        var right = (a.max() - left) / size + 1
+        var l = (a.min() - left) / size - 1
+        var bottom = (b.max() - top) / size + 1
+        var t = (b.min() - top) / size - 1
+        for (x in l..right) {
+            for (y in t..bottom) {
+                if (Pair(x * size + left, y * size + top) !in p) {
+                    createBoom(false, x, y)
+                }
+            }
+        }
+    }
+    private fun createBoom(isShip: Boolean, x: Int, y: Int) {
+        if (x !in 0..9 || y !in 0..9) {
+            return
+        }
+        val boomView = TextView(context)
+        boomView.text = ""
+        val background = GradientDrawable()
+        if (isShip) {
+            background.setColor(ContextCompat.getColor(context, R.color.red))
+        } else {
+            background.setColor(ContextCompat.getColor(context, R.color.grey))
+        }
+        boomView.background = background
+        boomView.setTextColor(ContextCompat.getColor(context, R.color.black_orange))
+        boomView.gravity = Gravity.CENTER
+
+        val params = ConstraintLayout.LayoutParams(size, size)
+        params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+        params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID
+        params.leftMargin = left + x * size
+        params.topMargin = top + y * size
+        boomView.layoutParams = params
+        layout.addView(boomView)
     }
 }

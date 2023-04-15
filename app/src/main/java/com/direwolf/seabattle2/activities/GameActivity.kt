@@ -2,6 +2,7 @@ package com.direwolf.seabattle2.activities
 
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.direwolf.seabattle2.R
 import com.direwolf.seabattle2.objects.game.AI
@@ -14,6 +15,8 @@ class GameActivity : DefaultActivity() {
     private lateinit var aiGrid: AIGrid
     private lateinit var ai: AI
     private var playerTurn = true
+    private var shotsPlayer = 0
+    private var shotsAI = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,7 +43,6 @@ class GameActivity : DefaultActivity() {
         )
         ai = AI()
         val ships1 = ai.setShips()
-        Log.w("cells", ships1.toString())
         aiGrid.setShips(ships1)
 
         val ships2 = intent.extras?.get("grid") as Array<Int>
@@ -50,25 +52,44 @@ class GameActivity : DefaultActivity() {
     private fun playerListener(x: Int, y: Int) {
         if (playerTurn) {
             var res = aiGrid.boom(x, y)
-            Log.w("boom", "$x $y")
-            if (res) {
-                if (aiGrid.check()) {
+            //Log.w("boom", "$x $y $res")
+            if (res.first) {
+                shotsPlayer += 1
+                if (shotsPlayer == 20) {
+                    Log.w("end", "player")
                     endGame(true)
                 }
             } else {
                 playerTurn = false
                 var coor = ai.boom()
-                res = playerGrid.boom(coor.first, coor.second)
-
-                while (res) {
-                    if (playerGrid.check()) {
+                var res2 = playerGrid.boom(coor.first, coor.second)
+                Log.w("bot", "${coor.first} ${coor.second}")
+                //Log.w("bot", "${coor.first} ${coor.second} ${res2[0]} ${res2[1]} ${res2[2]}")
+                ai.setResult(
+                    res2[0] as Boolean,
+                    coor.first,
+                    coor.second,
+                    res2[1] as Boolean,
+                    res2[2] as Int
+                )
+                while (res2[0] as Boolean) {
+                    shotsAI += 1
+                    if (shotsAI == 20) {
+                        Log.w("end", "ai")
                         endGame(false)
+                        break
                     }
                     coor = ai.boom()
-                    res = playerGrid.boom(coor.first, coor.second)
-                }
-                if (playerGrid.check()) {
-                    endGame(false)
+                    Log.w("bot", "${coor.first} ${coor.second}")
+                    res2 = playerGrid.boom(coor.first, coor.second)
+                    //Log.w("bot", "${coor.first} ${coor.second} ${res2[0]} ${res2[1]} ${res2[2]}")
+                    ai.setResult(
+                        res2[0] as Boolean,
+                        coor.first,
+                        coor.second,
+                        res2[1] as Boolean,
+                        res2[2] as Int
+                    )
                 }
                 playerTurn = true
             }
@@ -76,6 +97,16 @@ class GameActivity : DefaultActivity() {
     }
 
     private fun endGame(player: Boolean) {
+        val text: String
+        if (player) {
+            text = "Player win!"
+        }
+        else{
+            text = "AI win!"
+        }
+        val duration = Toast.LENGTH_SHORT
 
+        val toast = Toast.makeText(applicationContext, text, duration)
+        toast.show()
     }
 }

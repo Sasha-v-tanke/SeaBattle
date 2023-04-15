@@ -2,6 +2,7 @@ package com.direwolf.seabattle2.activities
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.direwolf.seabattle2.R
@@ -27,6 +28,21 @@ class PlacementActivity : DefaultActivity() {
                 intent.putExtra("grid", packShips())
                 startActivity(intent)
             }
+        }
+
+        val autoButton = findViewById<Button>(R.id.autoButton)
+        autoButton.setOnClickListener {
+            autoSet()
+        }
+
+        val resetButton = findViewById<Button>(R.id.resetButton)
+        resetButton.setOnClickListener {
+            for (ship in ships){
+                if (ship.isSelected()){
+                    ship.select()
+                }
+            }
+            selectedShip?.unselect()
         }
     }
 
@@ -70,8 +86,6 @@ class PlacementActivity : DefaultActivity() {
         createShip(left, top, 3)
         left = screenWidth - 6 * cellSize
         createShip(left, top, 3)
-        left = screenWidth - 8 * cellSize
-        createShip(left, top, 1)
         left = screenWidth - 2 * cellSize
         top = cellSize * 6
         createShip(left, top, 2)
@@ -88,6 +102,10 @@ class PlacementActivity : DefaultActivity() {
         top = cellSize * 7
         left = screenWidth - 8 * cellSize
         createShip(left, top, 1)
+        top = cellSize
+        left = screenWidth - 8 * cellSize
+        createShip(left, top, 1)
+
     }
 
     fun removeShip(ship: PlacementShip) {
@@ -124,5 +142,122 @@ class PlacementActivity : DefaultActivity() {
         val top = screenHeight / 2 - 5 * cellSize
         val bottom = top + cellSize * 10
         return listOf(selectedShip, left, right, top, bottom)
+    }
+
+    fun autoSet(){
+        for (ship in ships){
+            if (ship.isSelected()){
+                ship.select()
+            }
+        }
+        selectedShip?.unselect()
+
+        val selfField = Array(10) { Array(10) { 0 } }
+        fun checkPlace(x: Int, y: Int, length: Int, vertical: Boolean): Boolean {
+            var flag = true
+            if (vertical){
+                if (y + length - 1 > 9){
+                    return false
+                }
+            }
+            else{
+                if (x + length - 1 > 9){
+                    return false
+                }
+            }
+            if (vertical) {
+                flag = true
+                for (m in -1..1) {
+                    for (n in -1..length) {
+                        if (((0 <= x + m) and (x + m <= 9)) and ((0 <= y + n) and (y + n <= 9))) {
+                            if (selfField[x + m][y + n] != 0) {
+                                flag = false
+                                break
+                            }
+                        }
+                    }
+                }
+            } else {
+                flag = true
+                for (m in -1..1) {
+                    for (n in -1..length) {
+                        if (((0 <= x + n) and (x + n <= 9)) and ((0 <= y + m) and (y + m <= 9))) {
+                            if (selfField[x + n][y + m] != 0) {
+                                flag = false
+                                break
+                            }
+                        }
+                    }
+                }
+            }
+            return flag
+        }
+        fun setShip2(length: Int): List<Any> {
+            var flag: Boolean
+            while (true) {
+                flag = true
+
+                val x_start = (0..9).random()
+                val y_start = (0..9).random()
+
+                val direction = (-1..0).random()
+
+                for (i in 0 until length) {
+                    val x_cell = x_start - i * direction
+                    val y_cell = y_start + i * (direction + 1)
+                    if ((x_cell !in 0..9) or (y_cell !in 0..9)) {
+                        flag = false
+                        break
+                    }
+                }
+                if (flag) {
+
+                    if (checkPlace(x_start, y_start, length, direction == 0)) {
+                        for (i in 0 until length) {
+                            if (direction == 0) {
+                                selfField[x_start][y_start + i] = 1
+                            }
+                            else{
+                                selfField[x_start + i][y_start] = 1
+                            }
+                        }
+                        return listOf(x_start, y_start, direction == 0)
+                    }
+                }
+            }
+        }
+        fun setShips2(): Array<Int> {
+            var coords: Array<Int>
+            val ships2 = listOf(1, 2, 3, 4)
+            while (true) {
+                coords = emptyArray()
+                for (i in ships2.indices) {
+                    for (n in 0 until i + 1) {
+                        val res = setShip2(4 - i)
+                        coords += res[0] as Int
+                        coords += res[1] as Int
+                        coords += 3 - i
+                        coords += if (res[2] as Boolean) 1 else 0
+                    }
+                }
+                break
+            }
+            return coords
+        }
+
+        val coords = setShips2()
+        for (i in 0..9){
+            val newShip = ships[i]
+            newShip.select()
+            val x = (coords[i * 4]) * cellSize + getInf()[1] as Int
+            val y = (coords[i * 4 + 1]) * cellSize + getInf()[3] as Int
+            val len = coords[i * 4 + 2] + 1
+            val ver = coords[i * 4 + 3]
+            if (ver == 0){
+                selectedShip!!.rotate()
+            }
+            val a = selectedShip!!.getOrientation()
+            grid.setShip(x, y)
+        }
     }
 }

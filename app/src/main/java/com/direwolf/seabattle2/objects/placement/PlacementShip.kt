@@ -2,6 +2,7 @@ package com.direwolf.seabattle2.objects.placement
 
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
+import android.util.Log
 import android.view.Gravity
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -40,7 +41,7 @@ class PlacementShip(
         }
     }
 
-    private fun select() {
+    fun select() {
         if (selected) {
             rotate()
         } else {
@@ -59,14 +60,16 @@ class PlacementShip(
             textView.background = background
             selected = true
             vertical = true
+            set = false
             (context as PlacementActivity).shipSelect(this)
         }
     }
 
-    private fun rotate() {
+    fun rotate() {
         if (!selected) {
             return
         }
+        //Log.w("rotate", "0")
         if (vertical) {
             vertical = false
             val newParams = ConstraintLayout.LayoutParams(size * length, size)
@@ -75,10 +78,6 @@ class PlacementShip(
             newParams.leftMargin = defaultPlace.first - length / 2 * size
             newParams.topMargin = defaultPlace.second
             textView.layoutParams = newParams
-
-            val background = GradientDrawable()
-            background.setColor(ContextCompat.getColor(context, R.color.white))
-            textView.background = background
         } else {
             vertical = true
             val newParams = ConstraintLayout.LayoutParams(size, size * length)
@@ -87,10 +86,6 @@ class PlacementShip(
             newParams.leftMargin = defaultPlace.first
             newParams.topMargin = defaultPlace.second - length / 2 * size
             textView.layoutParams = newParams
-
-            val background = GradientDrawable()
-            background.setColor(ContextCompat.getColor(context, R.color.white))
-            textView.background = background
         }
     }
 
@@ -109,6 +104,14 @@ class PlacementShip(
             selected = false
             vertical = true
         }
+    }
+
+    fun reset(){
+        (context as PlacementActivity).removeShip(this)
+    }
+
+    fun isSelected(): Boolean{
+        return set
     }
 
     fun set(x: Int, y: Int) {

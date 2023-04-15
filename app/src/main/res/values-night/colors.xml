@@ -13,7 +13,10 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="orange">#FF6400</color>
+    <color name="green">#FF00FF00</color>
     <color name="orange_2">#FFFF3000</color>
+    <color name="red">#FFFF0000</color>
+    <color name="grey">#FF444444</color>
 
     <color name="black_orange">#FF6400</color>
     <color name="white_black">#FF000000</color>
