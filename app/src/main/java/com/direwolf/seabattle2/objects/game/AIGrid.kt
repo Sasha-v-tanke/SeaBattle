@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable
 import android.util.Log
 import android.view.Gravity
 import android.widget.TextView
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.direwolf.seabattle2.R
@@ -62,11 +63,13 @@ class AIGrid(private val context: Context, private val layout: ConstraintLayout,
     fun boom(x: Int, y: Int): Pair<Boolean, Boolean> {
         val flag = cells2[x][y] > 0
         var flag2 = false
+        //Log.w("player", "$x $y")
         if (flag) {
             for (ship in ships) {
                 if (Pair(x * size + left, y * size + top) in ship.getCells()) {
                     flag2 = ship.isDestroyed()
                     if (flag2) {
+                        //Toast.makeText(context, "Destroy", Toast.LENGTH_SHORT).show()
                         cells2[x][y] = -1
                         createBigBoom(ship)
                     }
@@ -80,6 +83,14 @@ class AIGrid(private val context: Context, private val layout: ConstraintLayout,
         return Pair(flag, flag2)
     }
 
+    fun showShips(){
+        for (ship in ships){
+            if (!ship.isDestroyed()){
+                ship.show()
+            }
+        }
+    }
+
     private fun createBigBoom(ship: GameShipAI) {
         val p = ship.getCells()
         var a = emptyArray<Int>()
@@ -88,10 +99,10 @@ class AIGrid(private val context: Context, private val layout: ConstraintLayout,
             a += e.first
             b += e.second
         }
-        var right = (a.max() - left) / size + 1
-        var l = (a.min() - left) / size - 1
-        var bottom = (b.max() - top) / size + 1
-        var t = (b.min() - top) / size - 1
+        val right = (a.max() - left) / size + 1
+        val l = (a.min() - left) / size - 1
+        val bottom = (b.max() - top) / size + 1
+        val t = (b.min() - top) / size - 1
         for (x in l..right) {
             for (y in t..bottom) {
                 if (Pair(x * size + left, y * size + top) !in p) {

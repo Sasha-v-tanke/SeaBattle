@@ -144,7 +144,7 @@ class PlacementActivity : DefaultActivity() {
         return listOf(selectedShip, left, right, top, bottom)
     }
 
-    fun autoSet(){
+    private fun autoSet(){
         for (ship in ships){
             if (ship.isSelected()){
                 ship.select()

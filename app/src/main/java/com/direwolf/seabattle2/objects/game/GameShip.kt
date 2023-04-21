@@ -11,7 +11,7 @@ import androidx.core.content.ContextCompat
 import com.direwolf.seabattle2.R
 import kotlin.reflect.KFunction2
 
-class GameShipAI (context: Context, layout: ConstraintLayout, private val size: Int,
+class GameShipAI (private val context: Context, layout: ConstraintLayout, private val size: Int,
                   private val x: Int, private val y: Int,
                   private val length: Int, private var vertical: Boolean,
                   private val func: KFunction2<Int, Int, Unit>
@@ -26,7 +26,8 @@ class GameShipAI (context: Context, layout: ConstraintLayout, private val size: 
             val textView = TextView(context)
             textView.text = ""
             val background = GradientDrawable()
-            background.setColor(ContextCompat.getColor(context, R.color.orange_black))
+            background.setColor(ContextCompat.getColor(context, R.color.black_orange))
+            background.setStroke(4, ContextCompat.getColor(context, R.color.white))
             textView.background = background
             textView.gravity = Gravity.CENTER
             val params = ConstraintLayout.LayoutParams(size, size)
@@ -40,7 +41,7 @@ class GameShipAI (context: Context, layout: ConstraintLayout, private val size: 
                 params.topMargin = y
             }
             textView.layoutParams = params
-            textView.visibility = View.INVISIBLE
+            //textView.visibility = View.INVISIBLE
             textView.setOnClickListener {
                 var a = x
                 var b = y
@@ -75,6 +76,17 @@ class GameShipAI (context: Context, layout: ConstraintLayout, private val size: 
         return a
     }
 
+    fun show(){
+        for (i in 0 until length){
+            if (cells[i] != 1){
+                val background = GradientDrawable()
+                background.setColor(ContextCompat.getColor(context, R.color.green))
+                background.setStroke(4, ContextCompat.getColor(context, R.color.white))
+                textViews[i].background = background
+            }
+        }
+    }
+
     fun isDestroyed(): Boolean {
         //Log.w("check ship", destroyed.toString())
         return destroyed
@@ -83,7 +95,8 @@ class GameShipAI (context: Context, layout: ConstraintLayout, private val size: 
 
 class GameShipPlayer (private val context: Context, layout: ConstraintLayout, private val size: Int,
                   private val x: Int, private val y: Int,
-                  private val length: Int, private var vertical: Boolean) {
+                  private val length: Int, private var vertical: Boolean)
+{
     private var textViews = emptyArray<TextView>()
     private var cells = Array(length) { 0 }
     private var set = false

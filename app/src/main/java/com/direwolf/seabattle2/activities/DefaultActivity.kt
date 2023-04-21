@@ -38,4 +38,9 @@ abstract class DefaultActivity: AppCompatActivity() {
         screenHeight = displayMetrics.heightPixels
         screenWidth = displayMetrics.widthPixels
     }
+
+    @Deprecated("Deprecated in Java")
+    override fun onBackPressed() {
+        return
+    }
 }
