@@ -21,7 +21,7 @@ class PlacementGrid (private val context: Context, private val layout: Constrain
         val bg = TextView(context)
         bg.text = ""
         val background = GradientDrawable()
-        background.setColor(ContextCompat.getColor(context, R.color.white))
+        background.setColor(ContextCompat.getColor(context, R.color.p_c_br_1))
         bg.background = background
         bg.setTextColor(ContextCompat.getColor(context, R.color.black_orange))
 

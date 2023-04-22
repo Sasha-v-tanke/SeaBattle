@@ -24,7 +24,7 @@ class PlacementShip(
     init {
         textView.text = ""
         val background = GradientDrawable()
-        background.setColor(ContextCompat.getColor(context, R.color.black_orange))
+        background.setColor(ContextCompat.getColor(context, R.color.p_s_1))
         textView.background = background
         textView.gravity = Gravity.CENTER
 
@@ -99,7 +99,7 @@ class PlacementShip(
             textView.layoutParams = newParams
 
             val background = GradientDrawable()
-            background.setColor(ContextCompat.getColor(context, R.color.black_orange))
+            background.setColor(ContextCompat.getColor(context, R.color.p_s_1))
             textView.background = background
             selected = false
             vertical = true
@@ -128,7 +128,7 @@ class PlacementShip(
         textView.layoutParams = newParams
 
         val background = GradientDrawable()
-        background.setColor(ContextCompat.getColor(context, R.color.orange_black))
+        background.setColor(ContextCompat.getColor(context, R.color.p_s_1))
         textView.background = background
         selected = false
         (context as PlacementActivity).shipSelect(this)

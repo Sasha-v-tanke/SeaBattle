@@ -14,8 +14,8 @@ import kotlin.reflect.KFunction2
 class GameShipAI (private val context: Context, layout: ConstraintLayout, private val size: Int,
                   private val x: Int, private val y: Int,
                   private val length: Int, private var vertical: Boolean,
-                  private val func: KFunction2<Int, Int, Unit>
-) {
+                  private val func: KFunction2<Int, Int, Unit>)
+{
     private var textViews = emptyArray<TextView>()
     private var cells = Array(length) { 0 }
     private var set = false
@@ -26,8 +26,8 @@ class GameShipAI (private val context: Context, layout: ConstraintLayout, privat
             val textView = TextView(context)
             textView.text = ""
             val background = GradientDrawable()
-            background.setColor(ContextCompat.getColor(context, R.color.black_orange))
-            background.setStroke(4, ContextCompat.getColor(context, R.color.white))
+            background.setColor(ContextCompat.getColor(context, R.color.p_c_bg_1))
+            background.setStroke(4, ContextCompat.getColor(context, R.color.p_c_br_1))
             textView.background = background
             textView.gravity = Gravity.CENTER
             val params = ConstraintLayout.LayoutParams(size, size)
@@ -93,7 +93,7 @@ class GameShipAI (private val context: Context, layout: ConstraintLayout, privat
     }
 }
 
-class GameShipPlayer (private val context: Context, layout: ConstraintLayout, private val size: Int,
+class GameShipPlayer (context: Context, layout: ConstraintLayout, private val size: Int,
                   private val x: Int, private val y: Int,
                   private val length: Int, private var vertical: Boolean)
 {
@@ -110,6 +110,7 @@ class GameShipPlayer (private val context: Context, layout: ConstraintLayout, pr
             background.setColor(ContextCompat.getColor(context, R.color.white))
             textView.background = background
             textView.gravity = Gravity.CENTER
+            textView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
             val params = ConstraintLayout.LayoutParams(size, size)
             params.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
             params.topToTop = ConstraintLayout.LayoutParams.PARENT_ID

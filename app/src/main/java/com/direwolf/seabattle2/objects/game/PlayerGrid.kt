@@ -128,15 +128,18 @@ class PlayerGrid(private val context: Context, private val layout: ConstraintLay
             return
         }
         val boomView = TextView(context)
-        boomView.text = ""
         val background = GradientDrawable()
         if (isShip) {
+            //boomView.text = "X"
+            //boomView.setTextColor(ContextCompat.getColor(context, R.color.red))
             background.setColor(ContextCompat.getColor(context, R.color.red))
         } else {
-            background.setColor(ContextCompat.getColor(context, R.color.grey))
+            //boomView.text = "O"
+            //boomView.setTextColor(ContextCompat.getColor(context, R.color.white))
+            background.setColor(ContextCompat.getColor(context, R.color.light_blue_900))
         }
+        boomView.setAutoSizeTextTypeWithDefaults(TextView.AUTO_SIZE_TEXT_TYPE_UNIFORM)
         boomView.background = background
-        boomView.setTextColor(ContextCompat.getColor(context, R.color.black_orange))
         boomView.gravity = Gravity.CENTER
 
         val params = ConstraintLayout.LayoutParams(size, size)

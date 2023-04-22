@@ -3,6 +3,7 @@ package com.direwolf.seabattle2.activities
 import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
+import android.widget.Toast
 import com.direwolf.seabattle2.R
 
 class StartActivity : DefaultActivity() {
@@ -15,5 +16,6 @@ class StartActivity : DefaultActivity() {
             val intent = Intent(this, PlacementActivity::class.java)
             startActivity(intent)
         }
+        Toast.makeText(this, "Добро пожаловать в игру SeaBattle!", Toast.LENGTH_SHORT).show()
     }
 }

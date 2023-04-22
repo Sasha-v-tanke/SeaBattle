@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.direwolf.seabattle2.R
 import com.direwolf.seabattle2.objects.placement.PlacementGrid
@@ -27,6 +28,8 @@ class PlacementActivity : DefaultActivity() {
                 val intent = Intent(this, GameActivity::class.java)
                 intent.putExtra("grid", packShips())
                 startActivity(intent)
+            } else{
+                Toast.makeText(this, "Вы не расставили все корабли", Toast.LENGTH_SHORT).show()
             }
         }
 
@@ -44,6 +47,8 @@ class PlacementActivity : DefaultActivity() {
             }
             selectedShip?.unselect()
         }
+
+        Toast.makeText(this, "Расставьте корабли", Toast.LENGTH_SHORT).show()
     }
 
     private fun packShips(): Array<Int> {

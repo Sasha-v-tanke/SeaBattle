@@ -16,8 +16,8 @@ class GameCell(context: Context, layout: ConstraintLayout, size: Int,
     init {
         textView.text = ""
         val background = GradientDrawable()
-        background.setColor(ContextCompat.getColor(context, R.color.black_orange))
-        background.setStroke(4, ContextCompat.getColor(context, R.color.white))
+        background.setColor(ContextCompat.getColor(context, R.color.p_c_bg_1))
+        background.setStroke(4, ContextCompat.getColor(context, R.color.p_c_br_1))
         textView.background = background
         textView.setTextColor(ContextCompat.getColor(context, R.color.black_orange))
 

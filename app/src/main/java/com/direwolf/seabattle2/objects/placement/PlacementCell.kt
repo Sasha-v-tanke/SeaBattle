@@ -16,10 +16,10 @@ class PlacementCell(context: Context, layout: ConstraintLayout, size: Int,
     init {
         textView.text = ""
         val background = GradientDrawable()
-        background.setColor(ContextCompat.getColor(context, R.color.black_orange))
-        background.setStroke(4, ContextCompat.getColor(context, R.color.white))
+        background.setColor(ContextCompat.getColor(context, R.color.light_blue_600))
+        background.setStroke(4, ContextCompat.getColor(context, R.color.dark_blue))
         textView.background = background
-        textView.setTextColor(ContextCompat.getColor(context, R.color.black_orange))
+        textView.setTextColor(ContextCompat.getColor(context, R.color.white))
 
         textView.gravity = Gravity.CENTER
 

@@ -1,11 +1,7 @@
 package com.direwolf.seabattle2.activities
 
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
-import android.util.Log
-import android.widget.Button
-import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.Toast
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -13,7 +9,6 @@ import com.direwolf.seabattle2.R
 import com.direwolf.seabattle2.objects.game.AI
 import com.direwolf.seabattle2.objects.game.AIGrid
 import com.direwolf.seabattle2.objects.game.PlayerGrid
-import kotlinx.coroutines.delay
 import java.lang.Integer.min
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
@@ -36,7 +31,7 @@ class GameActivity : DefaultActivity() {
     override fun onPostCreate(savedInstanceState: Bundle?) {
         super.onPostCreate(savedInstanceState)
 
-        val layout = findViewById<ConstraintLayout>(R.id.layoutt)
+        val layout = findViewById<ConstraintLayout>(R.id.game_layout)
         cellSize = min(screenHeight / 12, screenWidth / 23)
 
         val top = screenHeight / 2 - 5 * cellSize
@@ -124,7 +119,7 @@ class GameActivity : DefaultActivity() {
 
         val toast = Toast.makeText(applicationContext, text, duration)
         toast.show()
-        val layout = findViewById<ConstraintLayout>(R.id.layoutt)
+        val layout = findViewById<ConstraintLayout>(R.id.game_layout)
         val button = ImageView(this)
         button.setImageResource(R.drawable.home)
 
